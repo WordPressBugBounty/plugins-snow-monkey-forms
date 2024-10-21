@@ -1,5 +1,4 @@
-// import $ from 'jquery';
-import submit from './module/submit';
+import { submit, init } from './module/submit';
 
 document.addEventListener(
 	'change',
@@ -82,7 +81,12 @@ document.addEventListener(
 
 const forms = [].slice.call( document.querySelectorAll( '.snow-monkey-form' ) );
 forms.forEach( ( form ) => {
-	form.addEventListener( 'submit', submit, false );
+	form.addEventListener( 'submit', ( event ) => {
+		event.preventDefault();
+		submit( form );
+	} );
+
+	init( form );
 } );
 
 [ 'change', 'keyup' ].forEach( ( eventName ) => {

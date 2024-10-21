@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin name: Snow Monkey Forms
- * Version: 8.0.0
+ * Version: 9.0.0
  * Description: The Snow Monkey Forms is a mail form plugin for the block editor.
  * Author: inc2734
  * Author URI: https://2inc.org
@@ -16,6 +16,7 @@
 
 namespace Snow_Monkey\Plugin\Forms;
 
+use WP_REST_Response;
 use Snow_Monkey\Plugin\Forms\App\Model\Csrf;
 use Snow_Monkey\Plugin\Forms\App\Model\Directory;
 use Snow_Monkey\Plugin\Forms\App\Model\Meta;
@@ -57,8 +58,6 @@ class Bootstrap {
 	public function _plugins_loaded() {
 		add_filter( 'load_textdomain_mofile', array( $this, '_load_textdomain_mofile' ), 10, 2 );
 		load_plugin_textdomain( 'snow-monkey-forms', false, basename( SNOW_MONKEY_FORMS_PATH ) . '/languages' );
-
-		Csrf::save_token();
 
 		add_action( 'wp_enqueue_scripts', array( $this, '_enqueue_assets' ) );
 		add_action( 'enqueue_block_assets', array( $this, '_enqueue_block_assets' ) );
@@ -113,7 +112,7 @@ class Bootstrap {
 			'snow-monkey-forms',
 			'var snowmonkeyforms = ' . wp_json_encode(
 				array(
-					'view_json_url' => rest_url( '/snow-monkey-form/v1/view' ),
+					'view_json_url' => rest_url( '/snow-monkey-form/v1/view?ver=' . time() ), // Static URLs may return browser cache when browsing back.
 				)
 			),
 			'before'
@@ -163,27 +162,55 @@ class Bootstrap {
 	 * Register endpoint. This endpoint returns the form view.
 	 */
 	public function _endpoint() {
-		$user = wp_get_current_user();
+		register_rest_route(
+			'snow-monkey-form/v1',
+			'/view',
+			array(
+				'methods'             => 'GET',
+				'callback'            => function () {
+					if ( ! Csrf::validate_referer() ) {
+						return new WP_REST_Response( 'Invalid access.', 403 );
+					}
+
+					// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+					$form_id = isset( $_SERVER['HTTP_X_SMF_FORMID'] ) ? wp_unslash( $_SERVER['HTTP_X_SMF_FORMID'] ) : false;
+					// phpcs:enable
+
+					if ( ! $form_id ) {
+						return new WP_REST_Response( 'Bad request.', 400 );
+					}
+
+					$route = new Rest\Route\View(
+						array(
+							Meta::get_key() => array(
+								'method' => 'input',
+								'formid' => $form_id,
+							),
+						)
+					);
+					return $route->send();
+				},
+				'permission_callback' => function () {
+					return true;
+				},
+			)
+		);
 
 		register_rest_route(
 			'snow-monkey-form/v1',
 			'/view',
 			array(
 				'methods'             => 'POST',
-				'callback'            => function () use ( $user ) {
-					// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					$referer = isset( $_SERVER['HTTP_REFERER'] ) ? wp_unslash( $_SERVER['HTTP_REFERER'] ) : false;
-					// phpcs:enable
-					$homeurl = untrailingslashit( home_url( '/' ) );
-					if ( 0 !== strpos( $referer, $homeurl ) ) {
-						exit;
+				'callback'            => function () {
+					if ( ! Csrf::validate_referer() ) {
+						return new WP_REST_Response( 'Invalid access.', 403 );
 					}
 
 					$data = filter_input_array( INPUT_POST );
 					$data = $data ? $data : array();
 
 					if ( isset( $data[ Meta::get_key() ] ) ) {
-						$data[ Meta::get_key() ]['sender'] = $user;
+						$data[ Meta::get_key() ]['sender'] = wp_get_current_user();
 					}
 
 					$route = new Rest\Route\View( $data );
@@ -584,7 +611,10 @@ function snow_monkey_forms_uninstall() {
 	}
 
 	try {
-		Directory::do_empty( Directory::get(), true );
+		$base_direcotry = Directory::get();
+
+		Directory::do_empty( $base_direcotry, true );
+		Directory::remove( $base_direcotry );
 	} catch ( \Exception $e ) {
 		error_log( $e->getMessage() );
 	}

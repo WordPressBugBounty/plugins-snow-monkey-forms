@@ -5,8 +5,8 @@
  * @license GPL-2.0+
  */
 
-use Snow_Monkey\Plugin\Forms\App\Helper;
 use Snow_Monkey\Plugin\Forms\App\DataStore;
+use Snow_Monkey\Plugin\Forms\App\Model\Csrf;
 use Snow_Monkey\Plugin\Forms\App\Model\Directory;
 use Snow_Monkey\Plugin\Forms\App\Model\Dispatcher;
 use Snow_Monkey\Plugin\Forms\App\Model\Meta;
@@ -18,6 +18,7 @@ if ( empty( $attributes['formId'] ) ) {
 }
 
 $form_id = $attributes['formId'];
+
 $setting = DataStore::get( $form_id );
 if ( ! $setting->get( 'input_content' ) ) {
 	return;
@@ -26,8 +27,6 @@ if ( ! $setting->get( 'input_content' ) ) {
 $responser  = new Responser( array() );
 $validator  = new Validator( $responser, $setting );
 $controller = Dispatcher::dispatch( 'input', $responser, $setting, $validator );
-
-Directory::do_empty( Directory::generate_user_dirpath( $form_id ), true );
 
 // phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 // The $response is used in views.
@@ -44,7 +43,7 @@ foreach ( $response->controls as $name => $control ) {
 }
 ?>
 
-<form class="snow-monkey-form" id="snow-monkey-form-<?php echo esc_attr( $form_id ); ?>" method="post" action=""  enctype="multipart/form-data" data-screen="input">
+<form class="snow-monkey-form" id="snow-monkey-form-<?php echo esc_attr( $form_id ); ?>" method="post" action=""  enctype="multipart/form-data" data-screen="loading">
 	<div class="smf-focus-point" aria-hidden="true"></div>
 
 	<?php if ( $setting->get( 'use_progress_tracker' ) ) : ?>
@@ -86,18 +85,16 @@ foreach ( $response->controls as $name => $control ) {
 
 	<?php echo $input_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
-	<div class="smf-action">
-		<?php echo $response->action; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-	</div>
+	<div class="smf-action"></div>
 
 	<div class="smf-system-error-content-ready">
 		<?php
 		esc_html_e( 'An unexpected problem has occurred.', 'snow-monkey-forms' );
+		echo ' ';
 		esc_html_e( 'Please try again later or contact your administrator by other means.', 'snow-monkey-forms' );
 		?>
 	</div>
 
 	<?php Meta::the_formid( $form_id ); ?>
-	<?php Meta::the_token(); ?>
 	<?php do_action( 'snow_monkey_forms/form/append' ); ?>
 </form>
