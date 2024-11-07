@@ -13,6 +13,7 @@ export const NameControl = ( { value, onChange } ) => {
 
 	return (
 		<TextControl
+			__nextHasNoMarginBottom
 			label={ __( 'name', 'snow-monkey-forms' ) }
 			help={ __(
 				'Required. Input a unique machine-readable name.',
@@ -31,6 +32,7 @@ export const ValueControl = ( { value, onChange, multiple = false } ) => {
 
 	return (
 		<Control
+			__nextHasNoMarginBottom
 			label={ __( 'value', 'snow-monkey-forms' ) }
 			help={ __( 'Optional. Initial value.', 'snow-monkey-forms' ) }
 			value={ value }
@@ -42,6 +44,7 @@ export const ValueControl = ( { value, onChange, multiple = false } ) => {
 export const ValuesControl = ( { value, onChange } ) => {
 	return (
 		<TextareaControl
+			__nextHasNoMarginBottom
 			label={ __( 'value', 'snow-monkey-forms' ) }
 			help={ sprintf(
 				// translators: %1$s: line-break-char
@@ -60,6 +63,7 @@ export const ValuesControl = ( { value, onChange } ) => {
 export const PlaceholderControl = ( { value, onChange } ) => {
 	return (
 		<TextControl
+			__nextHasNoMarginBottom
 			label={ __( 'placeholder', 'snow-monkey-forms' ) }
 			value={ value }
 			onChange={ onChange }
@@ -70,6 +74,7 @@ export const PlaceholderControl = ( { value, onChange } ) => {
 export const MaxLengthControl = ( { value, onChange } ) => {
 	return (
 		<TextControl
+			__nextHasNoMarginBottom
 			label={ __( 'maxlength', 'snow-monkey-forms' ) }
 			help={ __(
 				'Optional. Maximum number of characters. If 0, not restricted.',
@@ -84,6 +89,7 @@ export const MaxLengthControl = ( { value, onChange } ) => {
 export const SizeControl = ( { value, onChange } ) => {
 	return (
 		<TextControl
+			__nextHasNoMarginBottom
 			label={ __( 'size', 'snow-monkey-forms' ) }
 			help={ __(
 				'Optional. The width of this item. If 0, not restricted.',
@@ -164,6 +170,7 @@ export const AutocompleteControl = ( { value, onChange, options = [] } ) => {
 
 	return (
 		<SelectControl
+			__nextHasNoMarginBottom
 			label={ __( 'autocomplete', 'snow-monkey-forms' ) }
 			value={ value }
 			options={ newOptions }
@@ -175,6 +182,7 @@ export const AutocompleteControl = ( { value, onChange, options = [] } ) => {
 export const IdControl = ( { value, onChange } ) => {
 	return (
 		<TextControl
+			__nextHasNoMarginBottom
 			label={ __( 'id', 'snow-monkey-forms' ) }
 			value={ value }
 			onChange={ onChange }
@@ -185,6 +193,7 @@ export const IdControl = ( { value, onChange } ) => {
 export const ClassControl = ( { value, onChange } ) => {
 	return (
 		<TextControl
+			__nextHasNoMarginBottom
 			label={ __( 'class', 'snow-monkey-forms' ) }
 			help={ __(
 				'Separate multiple classes with spaces.',
@@ -204,6 +213,7 @@ export const OptionsControl = ( { value, onChange } ) => {
 
 	return (
 		<TextareaControl
+			__nextHasNoMarginBottom
 			label={ __( 'options', 'snow-monkey-forms' ) }
 			value={ value }
 			help={ sprintf(

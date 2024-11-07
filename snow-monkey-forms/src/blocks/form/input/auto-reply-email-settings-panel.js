@@ -18,6 +18,7 @@ export default function () {
 	return (
 		<PanelBody title={ __( 'Auto reply email', 'snow-monkey-forms' ) }>
 			<TextControl
+				__nextHasNoMarginBottom
 				label={ __( 'To (Email address)', 'snow-monkey-forms' ) }
 				help={ __(
 					'Enter the name attribute value of the installed email form field in the following format: {name}',
@@ -37,6 +38,7 @@ export default function () {
 			/>
 
 			<TextControl
+				__nextHasNoMarginBottom
 				label={ __( 'Subject', 'snow-monkey-forms' ) }
 				value={ meta.auto_reply_email_subject }
 				onChange={ ( value ) =>
@@ -51,6 +53,7 @@ export default function () {
 			/>
 
 			<TextareaControl
+				__nextHasNoMarginBottom
 				label={ __( 'Body', 'snow-monkey-forms' ) }
 				value={ meta.auto_reply_email_body }
 				onChange={ ( value ) =>
@@ -64,6 +67,7 @@ export default function () {
 			/>
 
 			<TextControl
+				__nextHasNoMarginBottom
 				label={ __( 'Reply-To (Email address)', 'snow-monkey-forms' ) }
 				help={ __( 'Optional', 'snow-monkey-forms' ) }
 				value={ meta.auto_reply_email_replyto }
@@ -73,6 +77,7 @@ export default function () {
 			/>
 
 			<TextControl
+				__nextHasNoMarginBottom
 				label={ __( 'From (Email address)', 'snow-monkey-forms' ) }
 				help={ __( 'Optional', 'snow-monkey-forms' ) }
 				value={ meta.auto_reply_email_from }
@@ -82,6 +87,7 @@ export default function () {
 			/>
 
 			<TextControl
+				__nextHasNoMarginBottom
 				label={ __( 'Sender', 'snow-monkey-forms' ) }
 				help={ __( 'Optional', 'snow-monkey-forms' ) }
 				value={ meta.auto_reply_email_sender }
