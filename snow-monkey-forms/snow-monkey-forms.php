@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin name: Snow Monkey Forms
- * Version: 11.0.0
+ * Version: 12.0.0
  * Description: The Snow Monkey Forms is a mail form plugin for the block editor.
  * Author: inc2734
  * Author URI: https://2inc.org
@@ -23,6 +23,7 @@ use Snow_Monkey\Plugin\Forms\App\Model\Meta;
 use Snow_Monkey\Plugin\Forms\App\Rest;
 use Snow_Monkey\Plugin\Forms\App\Service\Admin\Admin;
 use Snow_Monkey\Plugin\Forms\App\Service\ReCaptcha\ReCaptcha;
+use Snow_Monkey\Plugin\Forms\App\Service\Turnstile\Turnstile;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -70,6 +71,7 @@ class Bootstrap {
 		add_action( 'template_redirect', array( $this, '_do_empty_save_dir' ) );
 
 		new ReCaptcha();
+		new Turnstile();
 	}
 
 	/**
